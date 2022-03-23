@@ -16,6 +16,7 @@ const contractAddress = "0xBB4B44266A7900c3E17Bb2B0f40805936e1f13E6";
 function App() {
   const [web3, setWeb3] = useState(null)
   const [mfer, setMfer] = useState({})
+  const [contractOwner, setContractOwner] = useState('')
 
   const [supplyAvailable, setSupplyAvailable] = useState(0)
   const [balanceOf, setBalanceOf] = useState(0)
@@ -33,6 +34,8 @@ function App() {
   const [currentTime, setCurrentTime] = useState(new Date().getTime())
   const [nftPrice, setNftPrice] = useState(0)
 
+  const [mintCount, setMintCount] = useState(1)
+
   const loadBlockchainData = async () => {
     // Fetch Contract, Data, etc.
     if (web3) {
@@ -41,17 +44,23 @@ function App() {
 
       try {
         const mferContract = new ethers.Contract(contractAddress, MFERAbi, web3)
-        
+
         console.log(mfer)
 
         const maxSupply = await mferContract._maxSupply()
         const totalSupply = await mferContract.totalSupply()
+        const cOwner = await mferContract.owner()
+        setContractOwner(cOwner)
         setSupplyAvailable(maxSupply - totalSupply)
 
         const balanceOf = await mferContract.balanceOf(account)
 
         setBalanceOf(balanceOf)
         setMfer(mferContract)
+
+        const price = await mferContract.getNFTPrice()
+        setNftPrice(price)
+
 
         // const allowMintingAfter = await mferContract.allowMintingAfter()
         // const timeDeployed = await openEmoji.methods.timeDeployed().call()
@@ -112,8 +121,8 @@ function App() {
     //   return
     // }
 
-    if (balanceOf > 50) {
-      window.alert('You\'ve already minted 50 collections!')
+    if (balanceOf > 5) {
+      window.alert('You\'ve already minted 5 collections!')
       return
     }
     // Mint NFT
@@ -121,16 +130,21 @@ function App() {
       setIsMinting(true)
       setIsError(false)
 
-      const price = await mfer.getNFTPrice()
-      setNftPrice(price)
-      console.log(ethers.utils.formatEther(price))
+      let tPrice;
+      if (account.toLowerCase() === contractOwner.toLowerCase()) {
+        tPrice = ethers.utils.parseEther('0')
+      } else {
+        tPrice = nftPrice.mul(mintCount)
+      }
+
 
       const signer = web3.getSigner()
 
       const contractWithSigner = mfer.connect(signer)
 
-      const tx = await contractWithSigner.mint(1, { value: price })
-      await tx.wait()
+      const tx = await contractWithSigner.mint(mintCount, { value: tPrice })
+      const receipt = await tx.wait()
+      console.log(receipt)
       const maxSupply = await mfer._maxSupply()
       const totalSupply = await mfer.totalSupply()
       setSupplyAvailable(maxSupply - totalSupply)
@@ -156,12 +170,6 @@ function App() {
   useEffect(() => {
     loadWeb3()
     loadBlockchainData()
-
-    console.log(mfer)
-    console.log(message)
-    console.log(currentNetwork)
-    console.log(supplyAvailable)
-    console.log(balanceOf)
   }, [account]);
 
   return (
@@ -169,7 +177,7 @@ function App() {
       <NavbarComponent account={account} web3Handler={web3Handler} />
       <div className='relative'>
         <div className="before:content-[''] before:bg-red-500 before:absolute before:top-0 before:left-0 before:right-0 before:bottom-0 before:bg-[url('./img/collage.jpg')] before:bg-cover before:bg-center before:opacity-30 before:blur">
-          < CarouselComponent mintNFTHandler={mintNFTHandler} openseaURL={openseaURL} account={account} blockchainExplorerURL={blockchainExplorerURL} />
+          < CarouselComponent mintNFTHandler={mintNFTHandler} openseaURL={openseaURL} account={account} blockchainExplorerURL={blockchainExplorerURL} mintCount={mintCount} setMintCount={setMintCount} />
           <div className='text-white z-10 font-custom text-xl'>
             {message ? (
               <div className='w-full text-center p-3 mb-4'><p>{message}</p></div>

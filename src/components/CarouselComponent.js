@@ -9,7 +9,17 @@ import img4 from './../img/1929.png';
 import img5 from './../img/2004.png';
 import img6 from './../img/2152.png';
 
-const CarouselComponent = ({ mintNFTHandler, openseaURL, account, blockchainExplorerURL }) => {
+const CarouselComponent = (props) => {
+  const { mintNFTHandler, openseaURL, account, blockchainExplorerURL, mintCount, setMintCount } = props
+
+  const mintOnchangeHandler = (value) => {
+    const mCount = parseInt(value.target.value)
+    if (mCount <= 5) {
+      setMintCount(mCount)
+    } 
+
+  }
+
   return (
     <>
       <div className="flex items-center justify-center flex-col md:flex-row py-20">
@@ -21,11 +31,14 @@ const CarouselComponent = ({ mintNFTHandler, openseaURL, account, blockchainExpl
             Welcome to the club.
           </div>
           <div className="flex mb-5 truncate flex-col md:flex-row md:space-x-3 space-y-3 md:space-y-0">
-            <button className="relative text-xl  px-6 py-3 bg-[#2181e2] text-white hover:bg-[#42a0ff] cursor-pointer font-custom" onClick={mintNFTHandler}>
-              MINT
-            </button>
-            <a href={openseaURL + account} target="_blank" className="font-custom text-xl py-3 px-6 bg-[#2181e2] hover:bg-[#42a0ff] text-white text-center  z-20">View My Opensea</a>
-            <a href={`${blockchainExplorerURL}address/${account}`} target="_blank" className="font-custom text-xl py-3 px-6 bg-white hover:bg-slate-300 text-black text-center z-20">My Etherscan</a>
+            <div className="z-10 flex items-center h-12 ">
+              <input className="focus:outline-none p-3 h-full flex-grow flex-shrink rounded-none" type="number" max="5" min="1" value={mintCount} onChange={mintOnchangeHandler} />
+              <button className="h-full relative text-xl flex-grow flex-shrink px-6 py-3 bg-[#2181e2] text-white hover:bg-[#42a0ff] cursor-pointer font-custom" onClick={mintNFTHandler}>
+                MINT
+              </button>
+            </div>
+            <a href={openseaURL + account} target="_blank" className="font-custom text-xl h-12 py-3 px-6 bg-[#2181e2] hover:bg-[#42a0ff] text-white text-center  z-20">View My Opensea</a>
+            <a href={`${blockchainExplorerURL}address/${account}`} target="_blank" className="font-custom text-xl py-3 px-6 bg-white hover:bg-slate-300 text-black text-center z-20 h-12">My Etherscan</a>
           </div>
         </div>
         <div className="w-[400px] rounded-[6rem]">

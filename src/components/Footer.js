@@ -6,11 +6,11 @@ const Footer = () => {
     return (
         <footer className="text-gray-600 body-font mt-3 w-full">
             <div className="bg-black ">
-                <div className="container mx-auto py-4 px-5 flex flex-wrap flex-col sm:flex-row">
+                <div className="container mx-auto py-4 px-5 flex flex-wrap flex-col sm:flex-row justify-between">
                     <p className="text-gray-500 text-sm text-center sm:text-left">© {year} MFER Friends —
                         <a href="https://twitter.com/" rel="noopener noreferrer" className="text-gray-600 ml-1" target="_blank">@MFER</a>
                     </p>
-                    <span className="inline-flex sm:ml-auto sm:mt-0 mt-2 justify-center sm:justify-start">
+                    <span className="inline-flex sm:mt-0 mt-2 justify-center sm:justify-start">
                         <a className="text-gray-500">
                             <svg fill="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" className="w-5 h-5" viewBox="0 0 24 24">
                                 <path d="M18 2h-3a5 5 0 00-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 011-1h3z"></path>
@@ -34,7 +34,10 @@ const Footer = () => {
                             </svg>
                         </a>
                     </span>
-                </div>
+                    <p className="text-gray-500 text-xs text-center sm:text-left mt-2 sm:mt-0">Powered by:&nbsp; 
+                        <a href="#" className="text-blue-600 hover:text-blue-200"><i>Button R Digitech (bRd)</i></a>
+                    </p>
+                </div> 
             </div>
         </footer>
     )
