@@ -8,7 +8,9 @@ import { ethers } from 'ethers';
 
 import CONFIG from './config.json';
 import MFERAbi from './abi/abi.json';
-const contractAddress = "0xBB4B44266A7900c3E17Bb2B0f40805936e1f13E6";
+import Alert from './components/alert/Alert';
+// const contractAddress = "0xBB4B44266A7900c3E17Bb2B0f40805936e1f13E6"; // rinkeby contract
+const contractAddress = "0xffF99a4936C73F8DEbFD045De35F1dE96ea7c292";
 
 
 
@@ -22,6 +24,7 @@ function App() {
   const [balanceOf, setBalanceOf] = useState(0)
 
   const [account, setAccount] = useState(null)
+  const [walletBalance, setWalletBalance] = useState('')
   const [currentNetwork, setCurrentNetwork] = useState(null)
 
   const [blockchainExplorerURL, setBlockchainExplorerURL] = useState('https://etherscan.io/')
@@ -85,16 +88,20 @@ function App() {
       setWeb3(web3)
       await web3.send("eth_requestAccounts", []);
       const accounts = await web3.listAccounts();
-
+      
       if (accounts.length > 0) {
         setAccount(accounts[0])
+        const accountBalance = await web3.getBalance(accounts[0])
+        setWalletBalance(accountBalance)
       } else {
         setMessage('Please connect with MetaMask')
       }
 
-      window.ethereum.on('accountsChanged', function (accounts) {
+      window.ethereum.on('accountsChanged', async function (accounts) {
         setAccount(accounts[0])
         setMessage(null)
+        const accountBalance = await web3.getBalance(accounts[0])
+        setWalletBalance(accountBalance)
       });
 
       window.ethereum.on('chainChanged', (chainId) => {
@@ -137,6 +144,10 @@ function App() {
         tPrice = nftPrice.mul(mintCount)
       }
 
+      if (walletBalance.lte(tPrice)) {
+        alert('You dont have sufficient funds in your wallet for this transaction..')
+        return
+      }
 
       const signer = web3.getSigner()
 

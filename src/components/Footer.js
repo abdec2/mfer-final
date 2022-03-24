@@ -35,7 +35,7 @@ const Footer = () => {
                         </a>
                     </span>
                     <p className="text-gray-500 text-xs text-center sm:text-left mt-2 sm:mt-0">Powered by:&nbsp; 
-                        <a href="#" className="text-blue-600 hover:text-blue-200"><i>Button R Digitech (bRd)</i></a>
+                        <a href="http://www.brdigitech.com" target="blank" className="text-blue-600 hover:text-blue-200"><i>Button R Digitech (bRd)</i></a>
                     </p>
                 </div> 
             </div>
